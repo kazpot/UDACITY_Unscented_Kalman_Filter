@@ -344,7 +344,14 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
       
       double rho  = sqrt(px * px + py * py);
       double phi  = atan2(py,px);
-      double rhod = (px * cos(yaw) * v + py * sin(yaw) * v)/sqrt(px * px + py * py);
+
+      //avoid zero division error
+      double rhod;
+      if(rho > 0.001){
+        rhod = (px * cos(yaw) * v + py * sin(yaw) * v)/rho;
+      }else{
+        rhod = 0; 
+      }
       
       Zsig(0,i) = rho;
       Zsig(1,i) = phi;
