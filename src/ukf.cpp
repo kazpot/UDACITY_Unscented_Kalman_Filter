@@ -68,10 +68,8 @@ UKF::UKF() {
 
   //set weights of sigma points
   weights_ = VectorXd(2 * n_aug_ + 1);
+  weights_.fill(0.5/(n_aug_ + lambda_));
   weights_(0) = lambda_/(lambda_ + n_aug_);
-  for (int i=1; i<2 * n_aug_+1; i++) {  
-     weights_(i) = 0.5/(n_aug_ + lambda_);
-  }
 
   is_initialized_ = false;
   previous_timestamp_ = 0.0;
@@ -126,7 +124,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   }
 
   //calculate dt - expressed in seconds
-  float dt = (meas_package.timestamp_ - previous_timestamp_) / 1000000.0; 
+  double dt = (meas_package.timestamp_ - previous_timestamp_) / 1000000.0; 
   previous_timestamp_ = meas_package.timestamp_;
 
   Prediction(dt);
